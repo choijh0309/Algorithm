@@ -3,13 +3,13 @@ import java.util.*;
 public class Main {
     static boolean visited[];
     static int[] distance;
-    static ArrayList< Edge>[] A;
+    static ArrayList<Edge>[] A;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int N = sc.nextInt();
         A = new ArrayList[N + 1];
         for (int i = 1; i <= N; i++) {
-            A[i] = new ArrayList< Edge>();
+            A[i] = new ArrayList<Edge>();
         }
         for (int i = 0; i < N; i++) {
             int S = sc.nextInt();
