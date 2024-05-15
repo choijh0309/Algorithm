@@ -1,25 +1,30 @@
-import java.util.*;
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt();
-        int K = sc.nextInt();
-        long start = 1, end = K;
-        long ans = 0;
-        while (start <= end) {
-            long middle = (start + end) / 2;
-            long cnt = 0;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        int N = Integer.parseInt(br.readLine());
+        int K = Integer.parseInt(br.readLine());
+        
+        long lo = 1;
+        long hi = K;
+        
+        while (lo < hi) {
+            long mid = (lo + hi) / 2;
+            long count = 0;
+            
             for (int i = 1; i <= N; i++) {
-                cnt += Math.min(middle / i, N);
+                count += Math.min(mid / i, N);
             }
-            if (cnt < K) {
-                start = middle + 1;
+            
+            if (K <= count) {
+                hi = mid;
             } else {
-                ans = middle;
-                end = middle - 1;
+                lo = mid + 1;
             }
         }
-        System.out.println(ans);
+        
+        System.out.println(lo);
     }
 }
