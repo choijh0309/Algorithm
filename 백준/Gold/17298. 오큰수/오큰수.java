@@ -3,30 +3,36 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(bf.readLine());
-        int[]A = new int[n];
-        int[]ans = new int[n];
-        String[] str = bf.readLine().split(" ");
-        for (int i = 0; i < n; i++) {
-            A[i] = Integer.parseInt(str[i]);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        int N = Integer.parseInt(br.readLine());
+        int[] seq = new int[N];
+        int[] stack = new int[N];
+        int top = -1;
+        
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        for (int i = 0; i < N; i++) {
+            seq[i] = Integer.parseInt(st.nextToken());
         }
-        Stack<Integer> myStack = new Stack<>();
-        myStack.push(0);
-        for (int i = 1; i < n; i++) {
-            while (!myStack.isEmpty() && A[myStack.peek()] < A[i]) {
-                ans[myStack.pop()] = A[i];
+        
+        for (int i = 0; i < N; i++) {
+            while (top != -1 && seq[stack[top]] < seq[i]) {
+                seq[stack[top]] = seq[i];
+                top--;
             }
-            myStack.push(i);
+            top++;
+            stack[top] = i;
         }
-        while (!myStack.empty()) {
-            ans[myStack.pop()] = -1;
+        
+        for (int i = top; i >= 0; i--) {
+            seq[stack[i]] = -1;
         }
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        for (int i = 0; i < n; i++) {
-            bw.write(ans[i] + " ");
+        
+        StringBuilder sb = new StringBuilder();
+        for (int v : seq) {
+            sb.append(v).append(' ');
         }
-        bw.write("\n");
-        bw.flush();
+        
+        System.out.println(sb);
     }
 }
