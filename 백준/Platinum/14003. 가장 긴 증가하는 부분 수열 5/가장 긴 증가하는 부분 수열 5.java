@@ -1,54 +1,60 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    static int N, maxLength;
-    static int B[] = new int[1000001];
-    static int A[] = new int[1000001];
-    static int D[] = new int[1000001];
-    static int ans[] = new int[1000001];
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static StringBuilder sb = new StringBuilder();
+    
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= N; i++) {
-            A[i] = Integer.parseInt(st.nextToken());
-        }
-        int index;
-        B[++maxLength] = A[1];
-        D[1] = 1;
-        for (int i = 2; i <= N; i++) {
-            if (B[maxLength] < A[i]) {
-                B[++maxLength] = A[i];
-                D[i] = maxLength;
+        List<Integer> list = new ArrayList<>();
+        int arr[] = new int[n + 1];
+        int indexArr[] = new int[n + 1];
+        
+        for (int i = 1; i <= n; i++)
+            arr[i] = Integer.parseInt(st.nextToken());
+        
+        list.add(Integer.MIN_VALUE);
+        
+        for (int i = 1; i <= n; i++) {
+            int num = arr[i];
+            int left = 1;
+            int right = list.size() - 1;
+            
+            if (num > list.get(list.size() - 1)) {
+                list.add(num);
+                indexArr[i] = list.size() - 1;
             } else {
-                index = binarysearch(1, maxLength, A[i]);
-                B[index] = A[i];
-                D[i] = index;
+                while (left < right) {
+                    int mid = (left + right) >> 1;
+                    
+                    if (list.get(mid) >= num) right = mid;
+                    else left = mid + 1;
+                }
+                list.set(right, num);
+                indexArr[i] = right;
             }
         }
-        System.out.println(maxLength);
-        index = maxLength;
-        int x = B[maxLength] + 1;
-        for (int i = N; i >= 1; i--) {
-            if (D[i] == index && A[i] < x) {
-                ans[index] = A[i];
-                x = A[i];
+        sb.append(list.size() - 1 + "\n");
+        Stack<Integer> stack = new Stack();
+        
+        int index = list.size() - 1;
+        
+        for (int i = n; i > 0; i--) {
+            if (indexArr[i] == index) {
                 index--;
+                stack.push(arr[i]);
             }
         }
-        for (int i = 1; i <= maxLength; i++) 
-            System.out.print(ans[i] + " ");
-    }
-    static int binarysearch(int l, int r, int now) {
-        int mid;
-        while (l < r) {
-            mid = (l + r) / 2;
-            if (B[mid] < now)
-                l = mid + 1;
-            else
-                r = mid;
+        
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop() + " ");
         }
-        return l;
+        
+        bw.write(sb.toString());
+        bw.close();
+        br.close();
     }
 }
