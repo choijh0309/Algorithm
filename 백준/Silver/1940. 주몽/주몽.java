@@ -1,29 +1,21 @@
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-import java.util.Arrays;
+import java.util.*;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-
-        int N = Integer.parseInt(bf.readLine());
-        int M = Integer.parseInt(bf.readLine());
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        int M = Integer.parseInt(br.readLine());
         int[] A = new int[N];
-        StringTokenizer st = new StringTokenizer(bf.readLine());
-
+        StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             A[i] = Integer.parseInt(st.nextToken());
         }
-
         Arrays.sort(A);
-
         int count = 0;
-        int i = 0;
-        int j = N - 1;
-
-        while (i < j) {
+        int i = 0; // A[0] -> Min
+        int j = N - 1; // A[N - 1] -> Max
+        while(i < j) {
             if (A[i] + A[j] < M) {
                 i++;
             } else if (A[i] + A[j] > M) {
@@ -34,8 +26,6 @@ public class Main {
                 j--;
             }
         }
-
         System.out.println(count);
-        bf.close();
     }
 }
