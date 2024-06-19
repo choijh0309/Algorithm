@@ -8,6 +8,7 @@ public class Main {
         for (int i = 1; i <= N; i++) {
             myQueue.add(i);
         }
+        
         while (myQueue.size() > 1) {
             myQueue.poll();
             myQueue.add(myQueue.poll());
