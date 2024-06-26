@@ -2,11 +2,11 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static boolean[] check;
+    static boolean[] visited;
     static int[][] arr;
     static int count = 0;
     static int node, line;
-    static Queue<Integer> q = new LinkedList<>();
+    static Queue<Integer> q = new ArrayDeque<>();
     
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -14,7 +14,7 @@ public class Main {
         node = Integer.parseInt(br.readLine());
         line = Integer.parseInt(br.readLine());
         arr = new int[node + 1][node + 1];
-        check = new boolean[node + 1];
+        visited = new boolean[node + 1];
         
         for (int i = 0; i < line; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -27,12 +27,12 @@ public class Main {
         System.out.println(count - 1);
     }
     
-    public static void dfs(int start) {
-        check[start] = true;
+    public static void dfs(int V) {
+        visited[V] = true;
         count++;
         
         for (int i = 0; i <= node; i++) {
-            if (arr[start][i] == 1 && !check[i])
+            if (arr[V][i] == 1 && !visited[i])
                 dfs(i);
         }
     }
