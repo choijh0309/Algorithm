@@ -1,60 +1,75 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int[][] danji;
-    static boolean[][] visited;
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {-1, 1, 0, 0};
-    static List<Integer> result;
-    static int cnt, N;
-    
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        
-        result = new LinkedList<>();
-        N = Integer.parseInt(br.readLine());
-        danji = new int[N][N];
-        visited = new boolean[N][N];
-        cnt = 1;
-        
-        for (int i = 0; i < N; i++) {
-            String str = br.readLine();
-            for (int j = 0; j < N; j++) {
-                danji[i][j] = str.charAt(j) - '0';
-            }
-        }
-        
-        for (int x = 0; x < N; x++) {
-            for (int y = 0; y < N; y++) {
-                if (danji[x][y] == 1 && !visited[x][y]) {
-                    dfs(x, y);
-                    result.add(cnt);
-                    cnt = 1;
-                }
-            }
-        }
-        
-        Collections.sort(result);
-        
-        bw.write(result.size()+"\n");
-		for(int r : result) bw.write(r+"\n");
-		bw.flush();
-		bw.close();
-    }
-    
-    public static void dfs(int x, int y) {
-        visited[x][y] = true;
-        
-        for (int i = 0; i < 4; i++) {
-            int nx = dx[i] + x;
-            int ny = dy[i] + y;
-            
-            if(nx>=0 && ny>=0 && nx<N && ny<N && !visited[nx][ny] && danji[nx][ny]==1) {
-				cnt++;
-				dfs(nx,ny);
-            }
-        }
-    }
+
+	static int N, houseCount;
+	static char[][] graph;
+	static boolean[][] visited;
+	static int[] dy = {-1, 1, 0, 0};
+	static int[] dx = {0, 0, -1, 1};
+	static ArrayList<Integer> complexSizes = new ArrayList<>();
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+
+		graph = new char[N][];
+		visited = new boolean[N][N];
+
+		for (int i = 0; i < N; i++) {
+			graph[i] = br.readLine().toCharArray();
+		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (graph[i][j] == '1' && !visited[i][j]) {
+					houseCount = 0;
+					dfs(i, j);
+					complexSizes.add(houseCount);
+				}
+			}
+		}
+
+		Collections.sort(complexSizes);
+
+		System.out.println(complexSizes.size());
+		for (int size : complexSizes) {
+			System.out.println(size);
+		}
+	}
+
+	static void dfs(int y, int x) {
+		visited[y][x] = true;
+		houseCount++;
+
+		for (int d = 0; d < 4; d++) {
+			int ny = y + dy[d];
+			int nx = x + dx[d];
+
+			if (ny < 0 || nx < 0 || ny >= N || nx >= N || visited[ny][nx] || graph[ny][nx] != '1') continue;
+			dfs(ny, nx);
+		}
+	}
 }
+
+/*
+7
+0110100
+0110101
+1110101
+0000111
+0100000
+0111110
+0111000
+
+3
+7
+8
+9
+*/
