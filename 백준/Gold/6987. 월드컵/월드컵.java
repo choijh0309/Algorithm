@@ -1,121 +1,130 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-// 월드컵
-// 백트래킹
-// 브루트 포스 
-// 시간복잡도 : O(3^15) -> 한 경기 당 최대 3가지 결과를 얻음. 총 15경기를 하므로.
+// 결과 유효성 검증
+// 완탐 기본 알고리즘 + 가지치기
+// 완탐 모든 경기를 순차적으로 진행해 가면서 발생할 수 있는 결과 (A 승리, B 승리, 비김)
+// 경기 진행(2팀) 을 위한 별도의 자료구조 game[][]
 public class Main {
-	static final int MAX_TEAM_COUNT = 6;
-	static int[][] matches;
-	static boolean isEndGame = false;
+
+	static int[] win, draw, lose; // 나라별
+	static int[][] game; // game[3] == 4 // 3 번 나라와 4번 나라가 경기
+	static boolean result; // 최종결과
+	static StringBuilder sb = new StringBuilder();
 	
-	public static void main(String args[]) throws IOException {
+	public static void main(String args[]) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
 		
-		int tc = 4;
-		// 최대 경기 가능한 경우의 수 구하기
-		int size = 0;
-		for(int i = 1; i < MAX_TEAM_COUNT; i++) {
-			size += i;
-		}
+		// index 가 나라
+		win = new int[6];
+		draw = new int[6];
+		lose = new int[6];
 		
-		// 경기 매치 별 팀 별도 저장 
-		matches = new int[size][2];
-		int index = 0;
-		for(int i = 0; i < MAX_TEAM_COUNT - 1; i++) {
-			for(int j = i + 1; j < MAX_TEAM_COUNT; j++) {
-				matches[index][0] = i;
-				matches[index][1] = j;
-				index++;
+		// 경기를 순차적으로 진행하기 위한 game 배열
+		game = new int[15][2]; // 5 + 4 + 3 + 2 + 1
+		int idx = 0;
+		for (int i = 0; i < 5; i++) {
+			for (int j = i + 1; j < 6; j++) {	
+				game[idx][0] = i;
+				game[idx][1] = j;
+				idx++;
 			}
 		}
 		
-		while(tc --> 0) {
-			st = new StringTokenizer(br.readLine());
-			int[][] worldCup = new int[3][MAX_TEAM_COUNT]; // 인덱스를 뒤집는게 나은가? 열 : 승/무/패, 행 : A,B,C,D,E,F팀 
-			boolean isPossible = true;
+		// 4가지 결과에 대한 검증
+		for (int i = 0; i < 4; i++) {
+			result = false;
 			
-			// 모든 경기 결과 입력받기 
-			for(int i = 0; i < MAX_TEAM_COUNT; i++) {
-				int win = Integer.valueOf(st.nextToken());
-				int draw = Integer.valueOf(st.nextToken());
-				int lose = Integer.valueOf(st.nextToken());
-				
-				worldCup[0][i] = win;
-				worldCup[1][i] = draw;
-				worldCup[2][i] = lose;
-				
-				// 한 팀당 5번을 경기해야 한다.
-				if(win + draw + lose != 5) {
-					isPossible = false;
-					break;
-				}
+			int winSum = 0;
+			int drawSum = 0;
+			int loseSum = 0;
+			
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			// 18 개 3개씩 한 나라의 승, 무, 패
+			for (int j = 0; j < 6; j++) {
+				winSum += win[j] = Integer.parseInt(st.nextToken());
+				drawSum += draw[j] = Integer.parseInt(st.nextToken());
+				loseSum += lose[j] = Integer.parseInt(st.nextToken());
 			}
 			
-			// 모든 팀의 경기 수가 조건에 일치하는 경우 경기 결과 비교 진행 
-			if(isPossible) {
-				backTracking(worldCup, 0, size);
-				if(isEndGame) {
-					sb.append(1);
-				}
-				else {
-					sb.append(0);
-				}
-			}
-			else {
-				sb.append(0);
+			// 가지치기 1
+			if ((winSum + drawSum + loseSum) != 30) {
+				sb.append("0 ");
+				continue;
 			}
 			
-			sb.append(" ");
-			isEndGame = false;
+			// 가지치기 2
+			if (winSum != loseSum) {
+				sb.append("0 ");
+				continue;
+			}
+			
+			// 완탐
+			dfs(0);
+			
+			if (result) sb.append("1 ");
+			else sb.append("0 ");
 		}
 		
-		System.out.print(sb.toString());
+		System.out.println(sb);
 	}
 	
-	// 백트래킹 함수 
-	static void backTracking(int[][] worldCup, int matchCount, int size) {
-		if(isEndGame) {
+	static void dfs(int idx) {
+		if (idx == 15) { // 모든 게임이 정상적으로 진행 데이터 검증
+			result = true;
 			return;
 		}
 		
-		// 모든 게임을 수행할 수 있다면 이 월드컵은 가능하다.
-		if(matchCount == size) {
-			isEndGame = true;
-			return;
+		int teamA = game[idx][0];
+		int teamB = game[idx][1];
+		
+		// A 승리, B 패배
+		if (win[teamA] > 0 && lose[teamB] > 0) {
+			win[teamA]--;
+			lose[teamB]--;
+			
+			dfs(idx + 1);
+			
+			win[teamA]++;
+			lose[teamB]++;
 		}
 		
-		int myTeam = matches[matchCount][0];
-		int enemyTeam = matches[matchCount][1];
+		// B 승리, A 패배
+		if (win[teamB] > 0 && lose[teamA] > 0) {
+			win[teamB]--;
+			lose[teamA]--;
+			
+			dfs(idx + 1);
+			
+			win[teamB]++;
+			lose[teamA]++;
+		}
 		
-		// 승 -> 패
-		if(worldCup[0][myTeam] > 0 && worldCup[2][enemyTeam] > 0) {
-			worldCup[0][myTeam]--;
-			worldCup[2][enemyTeam]--;
-			backTracking(worldCup, matchCount + 1, size);
-			worldCup[0][myTeam]++;
-			worldCup[2][enemyTeam]++;
-		}
-		// 무 -> 무
-		if(worldCup[1][myTeam] > 0 && worldCup[1][enemyTeam] > 0) {
-			worldCup[1][myTeam]--;
-			worldCup[1][enemyTeam]--;
-			backTracking(worldCup, matchCount + 1, size);
-			worldCup[1][myTeam]++;
-			worldCup[1][enemyTeam]++;
-		}
-		// 패 -> 승
-		if(worldCup[2][myTeam] > 0 && worldCup[0][enemyTeam] > 0) {
-			worldCup[2][myTeam]--;
-			worldCup[0][enemyTeam]--;
-			backTracking(worldCup, matchCount + 1, size);
-			worldCup[2][myTeam]++;
-			worldCup[0][enemyTeam]++;
+		// 무승부
+		if (draw[teamA] > 0 && draw[teamB] > 0) {
+			draw[teamA]--;
+			draw[teamB]--;
+			
+			dfs(idx + 1);
+			
+			draw[teamA]++;
+			draw[teamB]++;
 		}
 	}
 }
+/*
+대진표 (아래) 를
+0 1 2 3 4 5
+0 \ * * * * *   
+1   \ * * * *
+2     \ * * *
+3       \ * *
+4         \ *
+5           \
+
+아래의 2차원 배열로 2개의 대진을 표현하는 자료 구조 구성
+----------------------------> 순서대로 시합을 계속 이어가면서 단계별 검증 (끝까지 오면 성공)
+0 0 0 0 0 1 1 1 1 2 2 2 3 3 4
+1 2 3 4 5 2 3 4 5 3 4 5 4 5 5
+*/
