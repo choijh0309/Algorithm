@@ -1,53 +1,63 @@
 import java.util.*;
 
 class Solution {
-    private static class Vertex {
-        public final int x;
-        public final int y;
-        public final String id;
-        public final Set<String> connectedVertices;
-        
-        public Vertex(int x, int y) {
-            this.x = x;
-            this.y = y;
-            this.id = id(x, y);
-            this.connectedVertices = new HashSet<>();
-        }
-        
-        public static String id (int x, int y) {
-            return String.format("(%d, %d)", x, y);
-        }
-    }
-    
-    private static final int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
-    private static final int[] dy = {-1, -1, 0, 1, 1, 1, 0, -1};
-    
+    // 8방향에 대한 x, y 좌표 변화
+    private static final int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
+    private static final int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
+
     public int solution(int[] arrows) {
-        int count = 0;
-        
-        Map<String, Vertex> vertices = new HashMap<>();
-        
-        Vertex v = new Vertex(0, 0);
-        vertices.put(v.id, v);
-        for (int d : arrows) {
-            for (int i = 0; i < 2; i++) {
-                int x = v.x + dx[d];
-                int y = v.y + dy[d];
-                String id = Vertex.id(x, y);
-                
-                if (!vertices.containsKey(id)) {
-                    vertices.put(id, new Vertex(x, y));
-                } else if (!v.connectedVertices.contains(id)) {
-                    count++;
+        int roomCount = 0;
+        Node currentNode = new Node(0, 0);
+        Map<Node, Set<Node>> visited = new HashMap<>();
+
+        for (int arrow : arrows) {
+            for (int i = 0; i < 2; i++) {  // 각 이동을 두 번에 나누어 처리
+                int nx = currentNode.x + dx[arrow];
+                int ny = currentNode.y + dy[arrow];
+                Node nextNode = new Node(nx, ny);
+
+                if (!visited.containsKey(currentNode)) {
+                    visited.put(currentNode, new HashSet<>());
                 }
-                
-                Vertex u = vertices.get(id);
-                v.connectedVertices.add(u.id);
-                u.connectedVertices.add(v.id);
-                v = vertices.get(id);
+                if (!visited.containsKey(nextNode)) {
+                    visited.put(nextNode, new HashSet<>());
+                }
+
+                // 새로운 간선을 만났을 때 방 개수 증가
+                if (!visited.get(currentNode).contains(nextNode)) {
+                    if (visited.containsKey(nextNode) && visited.get(nextNode).size() > 0) {
+                        roomCount++;
+                    }
+                    visited.get(currentNode).add(nextNode);
+                    visited.get(nextNode).add(currentNode);
+                }
+
+                currentNode = nextNode;
             }
         }
-        
-        return count;
+
+        return roomCount;
+    }
+
+    private static class Node {
+        int x, y;
+
+        Node(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Node node = (Node) o;
+            return x == node.x && y == node.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
+        }
     }
 }
