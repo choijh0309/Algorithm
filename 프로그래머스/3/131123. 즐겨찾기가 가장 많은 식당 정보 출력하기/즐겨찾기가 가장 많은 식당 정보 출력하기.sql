@@ -1,0 +1,21 @@
+-- 코드를 입력하세요
+SELECT 
+    r.FOOD_TYPE,
+    r.REST_ID,
+    r.REST_NAME,
+    r.FAVORITES
+FROM 
+    REST_INFO r
+INNER JOIN (
+    SELECT 
+        FOOD_TYPE,
+        MAX(FAVORITES) AS MAX_FAVORITES
+    FROM 
+        REST_INFO
+    WHERE 
+        FOOD_TYPE IS NOT NULL
+    GROUP BY 
+        FOOD_TYPE
+) m ON r.FOOD_TYPE = m.FOOD_TYPE AND r.FAVORITES = m.MAX_FAVORITES
+ORDER BY 
+    r.FOOD_TYPE DESC;
