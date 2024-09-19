@@ -1,18 +1,23 @@
-import java.util.Arrays;
+import java.util.HashSet;
 
 class Solution {
     public boolean solution(String[] phone_book) {
-        // 전화번호 배열을 정렬합니다.
-        Arrays.sort(phone_book);
-        
-        // 인접한 두 전화번호를 비교합니다.
-        for (int i = 0; i < phone_book.length - 1; i++) {
-            if (phone_book[i + 1].startsWith(phone_book[i])) {
-                return false;
+        HashSet<String> set = new HashSet<>();
+
+        for (String phone : phone_book) {
+            set.add(phone);
+        }
+
+        for (String phone : phone_book) {
+            // 현재 전화번호의 모든 접두어 생성
+            for (int i = 1; i < phone.length(); i++) {
+                String prefix = phone.substring(0, i);
+                if (set.contains(prefix)) {
+                    return false;
+                }
             }
         }
-        
-        // 접두어 관계가 없으면 true를 반환합니다.
+
         return true;
     }
 }
