@@ -1,20 +1,17 @@
-import java.util.*;
+import java.util.Arrays;
 
 class Solution {
     public String solution(String[] participant, String[] completion) {
-        Map<String, Integer> count = new HashMap<>();
+        Arrays.sort(participant);
+        Arrays.sort(completion);
         
-        for (String name : participant) {
-            count.putIfAbsent(name, 0);
-            count.put(name, count.get(name) + 1);
+        int i;
+        for (i = 0; i < completion.length; i++) {
+            if (!participant[i].equals(completion[i])) {
+                return participant[i];
+            }
         }
         
-        for (String name : completion) {
-            int v = count.get(name) - 1;
-            count.put(name, v);
-            if (v == 0) count.remove(name);
-        }
-        
-        return count.keySet().iterator().next();
+        return participant[i];
     }
 }
