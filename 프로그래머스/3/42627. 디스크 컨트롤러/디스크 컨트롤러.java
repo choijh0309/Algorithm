@@ -1,44 +1,34 @@
 import java.util.*;
 
-public class Solution{
-    private static class Job {
-        public final int start;
-        public final int duration;
-    
-        private Job(int start, int duration) {
-            this.start = start;
-            this.duration = duration;
-        }
-    }
+class Solution {
+    public int solution(int[][] jobs) {
+        // 요청 시간 순으로 작업 배열을 정렬
+        Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
 
-    public int solution(int[][] rawJobs) {
-        Job[] jobs = new Job[rawJobs.length];
-        for (int i = 0; i < jobs.length; i++) {
-            jobs[i] = new Job(rawJobs[i][0], rawJobs[i][1]);
-        }
-        Arrays.sort(jobs, Comparator.comparingInt(job -> job.start));
-    
-        Queue<Job> q = new LinkedList<>(Arrays.asList(jobs));
-        PriorityQueue<Job> pq = new PriorityQueue<>(
-                                Comparator.comparingInt(job -> job.duration));
-    
-        int exec = 0;
-        int time = 0;
-        while (!q.isEmpty() || !pq.isEmpty()) {
-            while (!q.isEmpty() && q.peek().start <= time) {
-                pq.add(q.poll());
+        // 작업의 소요 시간이 짧은 순
+        PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
+
+        int time = 0; 
+        int index = 0;
+        int total = 0; 
+        int count = 0; 
+
+        while (count < jobs.length) {
+            while (index < jobs.length && jobs[index][0] <= time) {
+                heap.offer(jobs[index]);
+                index++;
             }
-        
-            if (pq.isEmpty()) {
-                time = q.peek().start;
-                continue;
+
+            if (heap.isEmpty()) {
+                time = jobs[index][0];
+            } else {
+                int[] job = heap.poll();
+                time += job[1]; 
+                total += time - job[0];
+                count++; 
             }
-        
-            Job job = pq.poll();
-            exec += time + job.duration - job.start;
-            time += job.duration;
         }
-    
-        return exec / jobs.length;
+
+        return total / jobs.length;
     }
 }
