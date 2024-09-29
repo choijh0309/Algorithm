@@ -1,34 +1,31 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
 
 class Solution {
     public String solution(int[] numbers) {
-        // Convert int array to String array
-        String[] strNumbers = new String[numbers.length];
+        String[] nums = new String[numbers.length];
+
         for (int i = 0; i < numbers.length; i++) {
-            strNumbers[i] = String.valueOf(numbers[i]);
+            nums[i] = String.valueOf(numbers[i]);
         }
-        
-        // Sort using custom comparator
-        Arrays.sort(strNumbers, new Comparator<String>() {
+
+        Arrays.sort(nums, new Comparator<String>() {
             @Override
-            public int compare(String a, String b) {
-                String order1 = a + b;
-                String order2 = b + a;
-                return order2.compareTo(order1); // Reverse order
+            public int compare(String s1, String s2) {
+                // 두 문자열을 이어붙인 결과를 비교하여 내림차순 정렬
+                return (s2 + s1).compareTo(s1 + s2);
             }
         });
-        
-        // If, after sorting, the largest number is '0', the entire number is zero
-        if (strNumbers[0].equals("0")) {
+
+        if (nums[0].equals("0")) {
             return "0";
         }
-        
-        // Build the largest number
-        StringBuilder largestNumber = new StringBuilder();
-        for (String num : strNumbers) {
-            largestNumber.append(num);
+
+        StringBuilder answer = new StringBuilder();
+        for (String num : nums) {
+            answer.append(num);
         }
-        
-        return largestNumber.toString();
+
+        return answer.toString();
     }
 }
