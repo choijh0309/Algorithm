@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Solution {
     private static class Point {
@@ -40,13 +42,13 @@ public class Solution {
             if (p.y > y) y = p.y;
         }
         
-        return new Point(x, y);
+        return new Point(x,y);
     }
-    
+        
     public String[] solution(int[][] line) {
         List<Point> points = new ArrayList<>();
         for (int i = 0; i < line.length; i++) {
-            for (int j = i + 1; j <line.length; j++) {
+            for (int j = 0; j < line.length; j++) {
                 Point intersection = intersection(line[i][0], line[i][1], line[i][2], line[j][0], line[j][1], line[j][2]);
                 if (intersection != null) {
                     points.add(intersection);
