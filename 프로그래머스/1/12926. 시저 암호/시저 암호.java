@@ -13,6 +13,7 @@ class Solution {
         for (char c : s.toCharArray()) {
             builder.append(push(c, n));
         }
+        
         return builder.toString();
     }
 }
