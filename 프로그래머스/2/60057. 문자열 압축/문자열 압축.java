@@ -12,7 +12,7 @@ class Solution {
     }
     
     private int compress(String source, int length) {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         
         String last = "";
         int count = 0;
@@ -20,16 +20,16 @@ class Solution {
             if (token.equals(last)) {
                 count++;
             } else {
-                if (count > 1) builder.append(count);
-                builder.append(last);
+                if (count > 1) sb.append(count);
+                sb.append(last);
                 last = token;
                 count = 1;
             }
         }
-        if (count > 1) builder.append(count);
-        builder.append(last);
+        if (count > 1) sb.append(count);
+        sb.append(last);
         
-        return builder.length();
+        return sb.length();
     }
     
     public int solution(String s) {
@@ -40,6 +40,7 @@ class Solution {
                 min = compressed;
             }
         }
+        
         return min;
     }
 }
