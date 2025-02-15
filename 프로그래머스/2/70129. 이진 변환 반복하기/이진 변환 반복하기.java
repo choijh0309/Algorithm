@@ -1,4 +1,4 @@
-class Solution {
+public class Solution {
     private int countZeros(String s) {
         int zeros = 0;
         for (char c : s.toCharArray()) {
@@ -20,6 +20,6 @@ class Solution {
             s = Integer.toString(ones, 2);
         }
         
-        return new int[] {loop, removed};
+        return new int[]{loop, removed};
     }
 }
