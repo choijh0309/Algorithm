@@ -1,9 +1,15 @@
-class Solution {
+public class Solution {
     boolean solution(String s) {
-        s = s.toLowerCase();
+        int ps = 0;
+        int ys = 0;
         
-        int ps = s.length() - s.replace("p", "").length();
-        int ys = s.length() - s.replace("y", "").length();
+        for (char c : s.toCharArray()) {
+            switch (c) {
+                    case 'p', 'P' -> ps++;
+                    case 'y', 'Y' -> ys++;
+            }
+        }
+        
         return ps == ys;
     }
 }
