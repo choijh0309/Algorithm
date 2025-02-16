@@ -1,4 +1,4 @@
-class Solution {
+public class Solution {
     private static final String[] words = {
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
     
