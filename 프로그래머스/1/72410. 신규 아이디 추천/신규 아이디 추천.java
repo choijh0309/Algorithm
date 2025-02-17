@@ -1,4 +1,4 @@
-class Solution {
+public class Solution {
     public String solution(String newId) {
         newId = newId.toLowerCase();
         newId = newId.replaceAll("[^a-z0-9\\-_.]", "");
