@@ -1,4 +1,4 @@
-class Solution {
+public class Solution {
     private static class Count {
         public final int zero;
         public final int one;
