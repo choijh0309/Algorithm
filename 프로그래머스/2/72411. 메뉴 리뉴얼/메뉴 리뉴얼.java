@@ -1,7 +1,13 @@
-import java.util.*;
-import java.util.stream.*;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
-class Solution {
+public class Solution {
     private static class Course {
         public final String course;
         public final int occurrences;
@@ -12,21 +18,22 @@ class Solution {
         }
     }
     
-    private void getCourses(char nextMenu, Set<String> selectedMenus,
-                           List<Set<String>> orderList,
+    private void getCourses(char nextMenu, Set<String> selectedMenus, 
+                            List<Set<String>> orderList,
                            Map<Integer, List<Course>> courses) {
         int occurrences = (int) orderList.stream()
-                                        .filter(order -> order.containsAll(selectedMenus))
-                                        .count();
+            .filter(order -> order.containsAll(selectedMenus))
+            .count();
         if (occurrences < 2) return;
         
         int size = selectedMenus.size();
         if (courses.containsKey(size)) {
             List<Course> courseList = courses.get(size);
             Course course = new Course(selectedMenus.stream()
-                                                    .sorted()
-                                                    .collect(Collectors.joining("")),
-                                                    occurrences);
+                                      .sorted()
+                                      .collect(Collectors.joining("")),
+                                      occurrences);
+            
             Course original = courseList.get(0);
             if (original.occurrences < occurrences) {
                 courseList.clear();
@@ -34,7 +41,7 @@ class Solution {
             } else if (original.occurrences == occurrences) {
                 courseList.add(course);
             }
-         }
+        }
         
         if (size >= 10) return;
         for (char menuChar = nextMenu; menuChar <= 'Z'; menuChar++) {
@@ -47,11 +54,12 @@ class Solution {
     
     public String[] solution(String[] orders, int[] course) {
         List<Set<String>> orderList = Arrays.stream(orders)
-                                            .map(String::chars)
-                                            .map(charStream -> charStream
-                                                    .mapToObj(menu -> String.valueOf((char) menu))
-                                                    .collect(Collectors.toSet()))
-                                            .collect(Collectors.toList());
+            .map(String::chars)
+            .map(charStream -> charStream
+                .mapToObj(menu -> String.valueOf((char) menu))
+                .collect(Collectors.toSet()))
+            .collect(Collectors.toList());
+        
         Map<Integer, List<Course>> courses = new HashMap<>();
         for (int length : course) {
             List<Course> list = new ArrayList<>();
@@ -61,10 +69,10 @@ class Solution {
         getCourses('A', new HashSet<>(), orderList, courses);
         
         return courses.values().stream()
-                .filter(list -> list.get(0).occurrences > 0)
-                .flatMap(List::stream)
-                .map(c -> c.course)
-                .sorted()
-                .toArray(String[]::new);
+            .filter(list -> list.get(0).occurrences > 0)
+            .flatMap(List::stream)
+            .map(c -> c.course)
+            .sorted()
+            .toArray(String[]::new);
     }
 }
