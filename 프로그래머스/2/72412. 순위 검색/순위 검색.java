@@ -1,8 +1,14 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.Arrays;
+import java.util.Collections;
 
-class Solution {
-    private void forEachKey(int index, String prefix, String[] tokens, Consumer<String> action) {
+public class Solution {
+    private void forEachKey(int index, String prefix, String[] tokens,
+                           Consumer<String> action) {
         if (index == tokens.length - 1) {
             action.accept(prefix);
             return;
@@ -15,7 +21,7 @@ class Solution {
     private Map<String, List<Integer>> buildScoresMap(String[] info) {
         Map<String, List<Integer>> scoresMap = new HashMap<>();
         
-        for (String s : info) {
+        for (String s :info) {
             String[] tokens = s.split(" ");
             int score = Integer.parseInt(tokens[tokens.length - 1]);
             forEachKey(0, "", tokens, key -> {
@@ -29,7 +35,7 @@ class Solution {
         }
         
         return scoresMap;
-    } 
+    }
     
     private int binarySearch(int score, List<Integer> scores) {
         int start = 0;
@@ -63,12 +69,12 @@ class Solution {
         
         return scores.size() - binarySearch(score, scoresMap.get(key));
     }
-        
+    
     public int[] solution(String[] info, String[] query) {
         Map<String, List<Integer>> scoresMap = buildScoresMap(info);
         
         int[] answer = new int[query.length];
-        for (int i = 0; i < answer.length; i++) {
+        for(int i = 0; i < answer.length; i++) {
             answer[i] = count(query[i], scoresMap);
         }
         return answer;
