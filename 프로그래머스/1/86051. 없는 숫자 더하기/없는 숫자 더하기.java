@@ -1,6 +1,7 @@
-import java.util.*;
+import java.util.Set;
+import java.util.HashSet;
 
-class Solution {
+public class Solution {
     public int solution(int[] numbers) {
         Set<Integer> set = new HashSet<Integer>();
         for (int v : numbers) {
