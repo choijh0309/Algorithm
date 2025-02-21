@@ -1,6 +1,6 @@
-import java.util.*;
+import java.util.Stack;
 
-class Solution {
+public class Solution {
     private boolean isCorrect(char[] str, int offset) {
         Stack<Character> stack = new Stack<>();
         
@@ -11,8 +11,8 @@ class Solution {
                     case '{' -> stack.push('}');
                     case '[' -> stack.push(']');
                     case ')', '}', ']' -> {
-                    if (stack.isEmpty()) return false;
-                    if (stack.pop() != c) return false;
+                        if (stack.isEmpty()) return false;
+                        if (stack.pop() != c) return false;
                     }
             }
         }
