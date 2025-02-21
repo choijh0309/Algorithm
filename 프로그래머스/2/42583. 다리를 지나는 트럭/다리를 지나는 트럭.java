@@ -1,37 +1,37 @@
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
-class Solution {
-    public int solution(int bridge_length, int weight, int[] truck_weights) {
-        Queue<Integer> waitingTrucks = new LinkedList<>();
-        for (int truck : truck_weights) {
-            waitingTrucks.offer(truck);
-        }
-
+public class Solution {
+    public int solution(int bridgeLength, int weight, int[] truckWeights) {
+        int bridgeWeight = 0;
         Queue<Integer> bridge = new LinkedList<>();
-        int totalWeightOnBridge = 0;
+        
+        for (int i = 0; i < bridgeLength; i++) {
+            bridge.add(0);
+        }
+        
         int time = 0;
-
-        for (int i = 0; i < bridge_length; i++) {
-            bridge.offer(0);
-        }
-
-        while (!bridge.isEmpty()) {
-            time++;
-
-            int leavingTruck = bridge.poll();
-            totalWeightOnBridge -= leavingTruck;
-
-            if (!waitingTrucks.isEmpty()) {
-                if (totalWeightOnBridge + waitingTrucks.peek() <= weight) {
-                    int nextTruck = waitingTrucks.poll();
-                    bridge.offer(nextTruck);
-                    totalWeightOnBridge += nextTruck;
-                } else {
-                    bridge.offer(0);
-                }
+        int truckIndex = 0;
+        while (truckIndex < truckWeights.length) {
+            bridgeWeight -= bridge.poll();
+            
+            int truckWeight = truckWeights[truckIndex];
+            if (bridgeWeight + truckWeight <= weight) {
+                bridge.add(truckWeight);
+                bridgeWeight += truckWeight;
+                truckIndex++;
+            } else {
+                bridge.add(0);
             }
+            
+            time++;
         }
-
+        
+        while (bridgeWeight > 0) {
+            bridgeWeight -= bridge.poll();
+            time++;
+        }
+        
         return time;
     }
 }
